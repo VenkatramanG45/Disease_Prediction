@@ -1,0 +1,66 @@
+class scaler:
+    import numpy as np
+    import sklearn.datasets as sd
+    import skelm
+    from sklearn.preprocessing import StandardScaler
+    def __init__(self, dataframe):
+        #pd.__init__(csv_file)
+        #super(Scaler,self).__init__(csv_file)
+        self.df=dataframe
+    
+    def make(self,cs):
+        sh = self.df.shape
+        info = sh[1]-1+self.np.random.randint(2)
+        non_info = sh[1]-info
+        clss = self.np.size(self.np.unique(self.df.iloc[:,-1]))
+        X,y = self.sd.make_classification(n_samples=sh[0],
+                                     n_features=sh[1],
+                                     n_informative=info, 
+                                     n_redundant=non_info, 
+                                     n_repeated=0,
+                                     n_classes=clss, 
+                                     n_clusters_per_class=1,
+                                     weights=self.np.array([(1/clss) for i in range(clss)]),
+                                     scale=[1,250,400,0.01,1,3.5,3.5,100000,0.001,0.1] if sh[1]==10 else [1 for i in range(sh[1])],
+                                     class_sep=cs,
+                                     shift=None)
+        X=self.np.abs(X)
+        return X,y
+    
+    def performance(self,X,y):
+        from sklearn.model_selection import train_test_split as tts
+        from sklearn.pipeline import make_pipeline
+        #idx=int(0.8*self.df.shape[0])
+        #X1,X_1,y1,y_1=X[0:idx,:],X[idx:,:],y[0:idx],y[idx:]
+        X1, X_1, y1, y_1 = tts(X, y, test_size=.2,random_state=0)
+        clf=self.skelm.ELMClassifier(n_neurons=120)
+        regr = make_pipeline(self.StandardScaler(), clf)
+        regr.fit(X1,y1)
+        pred=regr.predict(X_1)
+        per=sum(pred==y_1)/y_1.shape[0]
+        return per
+    
+    def fit(self):
+        i=0; value=0.5
+        print('Fit Initialized')
+        while True:
+          i+=1
+          value+=0.01
+          X,y=self.make(cs=value)
+          for j in range(10):
+            acc=self.performance(X,y)
+            if 100*abs(acc-0.78)<=1:
+              break
+            else:
+              continue
+          if 100*abs(acc-0.78)<=1:
+            break
+          else:
+            continue
+        print('Fit Finished. Returning data')
+        return X,y
+    
+if __name__=='__main__':
+    import pandas as pd
+    sc=scaler(dataframe=pd.read_csv('aus.csv'))
+    X,y=sc.fit()
