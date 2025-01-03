@@ -50,14 +50,14 @@ def diabetes_prediction(input_data):
 
     #Reshape array for predicting for instances.
     input_data_reshaped=input_data_as_numpy_array.reshape(1,-1)
-    print(input_data_reshaped)
+    #print(input_data_reshaped)
 
     
     std_data=scaler.transform(input_data_reshaped)
-    print(std_data)
+    #print(std_data)
 
     prediction=loading_model.predict(std_data)
-    print(prediction)
+    #print(prediction)
     if prediction[0]==0:
         return "The person is not diabetic."
     else:
